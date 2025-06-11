@@ -87,7 +87,7 @@
       :key="index"
       class="flex flex-col items-center text-purple-700"
     >
-      <div v-html="facilitySvgs[facility] || ''"></div>
+       <component :is="facilityIcons[facility]" class="w-6 h-6" />
       <span class="text-sm mt-1">{{ facility }}</span>
     </div>
   </div>
@@ -473,7 +473,7 @@
       </div> -->
 
       <div class="pb-10">
-        <RoomList :rooms="hotel.rooms || []" @selected-room="selectedRooms" />
+        <RoomList :rooms="hotel.rooms || []" @selected-room="selectedRooms" @book-room="openBooking" />
       </div>
     </section>
 
@@ -654,6 +654,7 @@
         </div>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -665,14 +666,18 @@ import { useI18n } from "vue-i18n";
 import RewiewView from "@/components/review/RewiewView.vue";
 import { onUnmounted, onMounted } from "vue";
 import { useRoute } from "vue-router";
+import { useRouter } from "vue-router";
 import { useServiceStore } from "@/stores/useServiceStore";
+import { WifiIcon, SquareParkingIcon, AccessibilityIcon, SpadeIcon, SnowflakeIcon, SunIcon, WavesLadderIcon, DumbbellIcon, UtensilsIcon, WineIcon, BabyIcon, DogIcon, BriefcaseIcon, CreditCardIcon, DollarSignIcon, CheckIcon, AppleIcon, SmartphoneIcon } from 'lucide-vue-next';
 
 
 const hotelStore = useServiceStore();
 const route = useRoute();
+const router = useRouter();
 const hotelId = route.params.id;
 const hotel = ref({});
 const search = ref(false);
+const showBooking =ref(false)
 const { t } = useI18n();
 
 const selectedRoom = ref(null);
@@ -684,25 +689,28 @@ const images = ref([
           "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=800&h=600&fit=crop"
         ])
 const facilities = computed(() => hotel.value.facilities || [])
-const facilitySvgs = {
-  "Wi-Fi": `<svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M5 12.55a11 11 0 0 1 14.08 0"/>
-              <path d="M1.42 9a16 16 0 0 1 21.16 0"/>
-              <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
-              <line x1="12" y1="20" x2="12.01" y2="20"/>
-            </svg>`,
-  "Parking": `<svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 17h8a4 4 0 0 0 0-8H4z"/>
-                <path d="M10 9v6"/>
-              </svg>`,
-  "Terrace": `<svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                <line x1="3" y1="9" x2="21" y2="9"/>
-              </svg>`,
-  "Air conditioning": `<svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                          <path d="M2 12h20"/>
-                          <path d="M12 2v20"/>
-                        </svg>`
+
+const facilityIcons = {
+  "Wi-Fi": WifiIcon,
+  "Parking": SquareParkingIcon,
+  "Terrace": SunIcon,
+  "Air conditioning": SnowflakeIcon,
+  "Pool" : WavesLadderIcon,
+  "Gym" :  DumbbellIcon,
+  "Spa" : SpadeIcon,
+  "Restaurant" : UtensilsIcon,
+  "Bar" : WineIcon,
+  "Kids" : BabyIcon,
+  "Pets" : DogIcon,
+  "Room Meeting" : BriefcaseIcon,
+  "Acessible PMR" : AccessibilityIcon
+
+}
+const openBooking = (room) => {
+  router.push({
+    name: 'booking',
+    params: { id: room.id },
+  })
 }
 
 
@@ -721,6 +729,7 @@ const openRoom = ref(false)
 
 
 const selectedRooms = (room) => {
+    showBooking.value = true
   selectedRoom.value = room
   console.log('selectroom',selectedRoom.value)
   openRoom.value = true

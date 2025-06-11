@@ -103,6 +103,13 @@ const router = createRouter({
       meta: { hideComponent: true, showHeader2: true, showFooter2: true },
     },
     {
+      path: "/booking/:id",
+      name: "Booking",
+      component: () => import("@/views/hotel/EBookingHotelView.vue"),
+      meta: { hideComponent: true, showHeader2: true, showFooter2: true },
+      props: true,
+    },
+    {
       path: "/hotelList/:city",
       name: "hotelList",
       // component: () => import('@/views/hotel/EBookingHotelView.vue'),

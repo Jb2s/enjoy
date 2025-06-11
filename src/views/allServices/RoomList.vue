@@ -20,7 +20,7 @@
 
               class="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded-full text-sm"
             >
-              Reserver
+              {{ $t('book') }}
             </div>
           </div>
           <div class="mt-4">
@@ -53,13 +53,10 @@
                 <span class="text-sm font-normal text-gray-600">/ nuit</span>
               </div>
               <button
-                :class="[
-                  'px-4 py-2 rounded-md text-white text-sm font-medium transition',
-                  room.available ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-400 cursor-not-allowed'
-                ]"
-                :disabled="!room.available"
+               @click="goToBooking(room)"
+                class="px-4 py-2 rounded-md text-white text-sm font-medium transition bg-blue-600 hover:bg-blue-700"
               >
-                {{ room.available ? 'Réserver' : 'Complet' }}
+                {{ $t('book') }}
               </button>
             </div>
           </div>
@@ -142,6 +139,7 @@
               </td>
               <td class="px-6 py-4 text-right">
                 <button
+                 @click="goToBooking(room)"
                   class="
                     px-6 py-2 rounded-md text-white text-sm font-medium transition bg-orange-600 hover:bg-orange-700 "
 
@@ -178,7 +176,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['selectedRoom'])
+const emit = defineEmits(['selectedRoom','book-room'])
 
 const openRoomModal = (room) => {
   emit('selectedRoom',room)
@@ -193,6 +191,14 @@ const getRoomDetail = (room, key) => {
   return found?.value || '—'
 }
 
+const goToBooking = (room) => {
+  emit('book-room', room)
+}
+
+// const openBooking = (room) => {
+//   emit('book-room', room)
+//   console.log('Book cette chambre :', room)
+// }
 
 
 
